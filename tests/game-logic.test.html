@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Проверки игровой логики — «Полис»</title>
+  <style>
+    body { max-width: 52rem; margin: 2rem auto; padding: 0 1rem; font: 1rem/1.5 system-ui, sans-serif; }
+    [data-status="pass"] { color: #176b3a; }
+    [data-status="fail"] { color: #a31919; }
+    li { margin: .35rem 0; }
+  </style>
+</head>
+<body>
+  <h1>Проверки игровой логики</h1>
+  <p id="summary">Проверки не запущены.</p>
+  <ol id="results"></ol>
+  <script src="../src/game-data.js"></script>
+  <script src="../src/game-logic.js"></script>
+  <script>
+    (() => {
+      const results = document.querySelector("#results");
+      const summary = document.querySelector("#summary");
+      const tests = [];
+      const fail = (message) => { throw new Error(message); };
+      const equal = (actual, expected, message) => {
+        if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+          fail(`${message}: ожидалось ${JSON.stringify(expected)}, получено ${JSON.stringify(actual)}`);
+        }
+      };
+      const truthy = (value, message) => { if (!value) fail(message); };
+      const throws = (fn, message) => {
+        let didThrow = false;
+        try { fn(); } catch { didThrow = true; }
+        truthy(didThrow, message);
+      };
+      const test = (name, fn) => tests.push({ name, fn });
+      const { PolisData, PolisGame } = window;
+      const freshGame = () => PolisGame.createInitialState();
+      const startGame = () => {
+        let state = PolisGame.startGame(freshGame());
+        while (state.phase === "rules") state = PolisGame.nextRuleSlide(state);
+        return state;
+      };
+      const choose = (state, crisisIndex, optionId) => {
+        const option = PolisData.crises[crisisIndex].options.find((item) => item.id === optionId);
+        return PolisGame.applyChoice(state, option);
+      };
+      const finishChoice = (state) => PolisGame.advanceAfterDebrief(state);
+      const invariants = (state) => {
+        const values = Object.values(state.factions);
+        truthy(values.every((value) => Number.isInteger(value) && value >= 0 && value <= 10),
+          "влияние должно быть целым числом от 0 до 10");
+        equal(values.reduce((sum, value) => sum + value, 0), 15, "сумма влияния");
+        truthy(Number.isInteger(state.unity) && state.unity >= 0 && state.unity <= 10,
+          "Единство должно быть целым числом от 0 до 10");
+      };
+      const allEffects = [
+        [[1,0,-1,1],[-1,2,-1,0],[-2,-1,3,-2]],
+        [[-1,3,-2,-2],[0,-1,1,1],[2,-1,-1,0]],
+        [[-1,-1,2,0],[3,-2,-1,-2],[0,1,-1,1]],
+        [[1,-1,0,1],[-1,2,-1,0],[-1,-2,3,-2]],
+        [[-2,3,-1,-2],[-1,0,1,1],[2,-1,-1,0]],
+        [[-1,-1,2,0],[3,-1,-2,-2],[0,1,-1,1]],
+        [[1,0,-1,1],[-1,2,-1,0],[-1,-2,3,-2]],
+        [[-1,3,-2,-2],[-1,0,1,1],[2,-1,-1,0]],
+        [[-1,-1,2,0],[3,-1,-2,-2],[-1,1,0,1]],
+        [[1,-1,0,1],[-1,2,-1,0],[-1,-2,3,-2]],
+        [[-2,3,-1,-2],[0,-1,1,1],[2,-1,-1,0]],
+        [[-1,-1,2,0],[3,-2,-1,-2],[0,1,-1,1]]
+      ];
+
+      test("Начальное состояние и запуск правил", () => {
+        const state = freshGame();
+        equal([state.factions.F, state.factions.V, state.factions.T, state.unity], [5,5,5,8],
+          "стартовые шкалы");
+        equal(PolisGame.startGame(state).phase, "rules", "публичный маршрут");
+      });
+      test("Полный набор из 12 кризисов и точные эффекты 36 вариантов", () => {
+        equal(PolisData.crises.length, 12, "число кризисов");
+        PolisData.crises.forEach((crisis, index) => {
+          equal(crisis.id, index + 1, `ID кризиса ${index + 1}`);
+          equal(crisis.options.length, 3, `число вариантов кризиса ${index + 1}`);
+          truthy(crisis.title && crisis.scenario && crisis.quote && crisis.question,
+            `полнота текста кризиса ${index + 1}`);
+          crisis.options.forEach((option, optionIndex) => {
+            equal(option.id, ["A","B","C"][optionIndex], `ID варианта ${index + 1}`);
+            truthy(option.text && option.type, `текст варианта ${index + 1}${option.id}`);
+            const effect = ["F","V","T","E"].map((key) => option.effect[key] || 0);
+            equal(effect, allEffects[index][optionIndex], `эффект кризиса ${index + 1}${option.id}`);
+          });
+        });
+      });
+      test("Кризис 1A применяет согласованный эффект", () => {
+        const state = choose(startGame(), 0, "A");
+        equal([state.factions.F,state.factions.V,state.factions.T,state.unity], [6,5,4,9], "1A");
+      });
+      test("Контрольная последовательность останавливает перенос на 10", () => {
+        let state = choose(startGame(), 0, "A");
+        state = finishChoice(state);
+        state = choose(state, 1, "C");
+        state = finishChoice(state);
+        state = choose(state, 2, "B");
+        equal([state.factions.F,state.factions.V,state.factions.T,state.unity], [10,2,3,7],
+          "1A → 2C → 3B");
+      });
+      test("При равных потерях порядок плательщиков — Ф, затем В, затем Т", () => {
+        const initial = { ...startGame(), factions: { F: 9, V: 5, T: 1 } };
+        const state = PolisGame.applyChoice(initial, {
+          id: "TEST", effect: { F: 2, V: -1, T: -1, E: 0 }
+        });
+        equal(state.factions, { F: 10, V: 4, T: 1 }, "первым платит Ф при равном минусе");
+      });
+      test("Нулевой плательщик заменяется другой непобеждающей фракцией", () => {
+        const state = {
+          ...startGame(), factions: { F: 7, V: 0, T: 8 }
+        };
+        const next = PolisGame.applyChoice(state, {
+          id: "TEST", effect: { F: 2, V: -1, T: -1, E: 0 }
+        });
+        equal(next.factions, { F: 9, V: 0, T: 6 }, "альтернативный плательщик");
+      });
+      test("Перенос ограничен максимумом победителя без потери суммы", () => {
+        const state = {
+          ...startGame(), factions: { F: 9, V: 3, T: 3 }
+        };
+        const next = PolisGame.applyChoice(state, {
+          id: "TEST", effect: { F: 3, V: -2, T: -1, E: 0 }
+        });
+        equal(next.factions, { F: 10, V: 2, T: 3 }, "граница влияния");
+        invariants(next);
+      });
+      test("Единство ограничивается диапазоном 0–10", () => {
+        const state = { ...startGame(), unity: 9 };
+        const next = PolisGame.applyChoice(state, {
+          id: "TEST", effect: { F: 1, V: 0, T: -1, E: 5 }
+        });
+        equal(next.unity, 10, "верхняя граница Е");
+      });
+      test("Праздник после кризиса 4 добавляет одно очко и ограничен десятью", () => {
+        let state = { ...startGame(), crisisIndex: 3, unity: 9 };
+        state = choose(state, 3, "B");
+        state = finishChoice(state);
+        equal([state.phase,state.unity], ["festival",10], "праздник 4");
+        state = PolisGame.advanceAfterFestival(state);
+        equal([state.phase,state.crisisIndex], ["game",4], "переход после праздника");
+      });
+      test("Праздник после кризиса 8 добавляет одно очко", () => {
+        let state = { ...startGame(), crisisIndex: 7, unity: 6 };
+        state = choose(state, 7, "C");
+        state = finishChoice(state);
+        equal([state.phase,state.unity], ["festival",7], "праздник 8");
+      });
+      test("При Е=0 партия завершается без праздника", () => {
+        let state = { ...startGame(), crisisIndex: 3, unity: 1 };
+        state = choose(state, 3, "C");
+        equal([state.unity,state.ended,state.phase], [0,true,"debrief"], "поражение при выборе");
+        state = finishChoice(state);
+        equal([state.phase,state.crisisIndex], ["result",3], "итог вместо праздника");
+      });
+      test("Результаты охватывают все уровни Единства и равенства", () => {
+        const result = (unity, factions) => PolisGame.getResult({ unity, factions });
+        equal(result(0,{F:5,V:5,T:5}).name, "Раздор", "Е=0");
+        equal(result(1,{F:5,V:5,T:5}).name, "Тирания", "Е=1");
+        equal(result(2,{F:5,V:5,T:5}).name, "Тирания", "Е=2");
+        equal(result(3,{F:5,V:5,T:5}).name, "Демократия", "Е=3");
+        equal(result(4,{F:5,V:5,T:5}).name, "Демократия", "Е=4");
+        equal(result(5,{F:6,V:5,T:4}).name, "Аристократия", "лидируют Ф");
+        equal(result(5,{F:4,V:6,T:5}).name, "Тимократия", "лидируют В");
+        equal(result(5,{F:4,V:5,T:6}).name, "Олигархия", "лидируют Т");
+        equal(result(5,{F:6,V:6,T:3}).name, "Смешанный строй", "ничья двух фракций");
+        equal(result(5,{F:5,V:5,T:5}).name, "Смешанный строй", "ничья трёх фракций");
+      });
+      test("Повторный выбор отклоняется и не меняет исходное состояние", () => {
+        const initial = startGame();
+        const first = choose(initial, 0, "A");
+        throws(() => PolisGame.applyChoice(first, PolisData.crises[0].options[1]),
+          "повторное применение эффекта должно быть отклонено");
+        equal(initial.factions, { F: 5, V: 5, T: 5 }, "исходное состояние неизменно");
+        throws(() => PolisGame.applyChoice(initial, null), "неизвестный вариант должен быть отклонён");
+      });
+      test("Сброс возвращает начальные шкалы и первый слайд", () => {
+        const state = PolisGame.restart({ ...startGame(), crisisIndex: 8, unity: 2, teacherMode: true });
+        equal([state.phase,state.crisisIndex,state.unity,state.teacherMode], ["rules",0,8,true], "сброс");
+        equal(state.factions, { F: 5, V: 5, T: 5 }, "стартовое влияние");
+      });
+      test("PIN открывает только teacher-режим, неверный PIN остаётся на форме", () => {
+        const gate = PolisGame.openTeacherGate(freshGame());
+        const rejected = PolisGame.unlockTeacher(gate, "000");
+        equal([rejected.phase,rejected.pinError], ["pin",true], "неверный PIN");
+        const accepted = PolisGame.unlockTeacher(rejected, "1881");
+        equal([accepted.phase,accepted.teacherMode,accepted.crisisIndex], ["game",true,0], "верный PIN");
+      });
+      test("Все достижимые партии сохраняют инварианты после каждого кризиса", () => {
+        const pending = [startGame()];
+        const visited = new Set();
+        while (pending.length) {
+          const current = pending.pop();
+          const key = [
+            current.crisisIndex, current.factions.F, current.factions.V,
+            current.factions.T, current.unity
+          ].join(":");
+          if (visited.has(key)) continue;
+          visited.add(key);
+          const crisis = PolisData.crises[current.crisisIndex];
+          for (const option of crisis.options) {
+            let next = PolisGame.applyChoice(current, option);
+            invariants(next);
+            next = PolisGame.advanceAfterDebrief(next);
+            invariants(next);
+            if (next.phase === "festival") {
+              next = PolisGame.advanceAfterFestival(next);
+              invariants(next);
+            }
+            if (next.phase === "game") pending.push(next);
+          }
+        }
+        truthy(visited.size > 100, `ожидалось исследовать много состояний, проверено ${visited.size}`);
+      });
+      test("Одинаковая последовательность даёт одинаковые результаты в обоих режимах", () => {
+        const play = (teacherMode) => {
+          let state = { ...startGame(), teacherMode };
+          for (const id of ["A","C","B","A","C","B"]) {
+            state = choose(state, state.crisisIndex, id);
+            if (state.phase === "debrief") state = finishChoice(state);
+            if (state.phase === "festival") state = PolisGame.advanceAfterFestival(state);
+          }
+          return [state.factions,state.unity,state.crisisIndex,state.phase];
+        };
+        equal(play(false), play(true), "сравнение режимов");
+      });
+
+      let passed = 0;
+      for (const item of tests) {
+        const row = document.createElement("li");
+        try {
+          item.fn();
+          row.textContent = `PASS — ${item.name}`;
+          row.dataset.status = "pass";
+          passed += 1;
+        } catch (error) {
+          row.textContent = `FAIL — ${item.name}: ${error.message}`;
+          row.dataset.status = "fail";
+        }
+        results.append(row);
+      }
+      summary.textContent = `${passed}/${tests.length} проверок пройдено`;
+      document.body.dataset.result = passed === tests.length ? "pass" : "fail";
+    })();
+  </script>
+</body>
+</html>
