@@ -119,14 +119,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
   border: 1px solid rgba(45, 81, 75, .24);
   border-radius: 999px;
   background: #e1eae6;
-  box-shadow: inset 0 1px 3px rgba(33, 60, 58, .12);
 }
 .topbar-unity-meter span {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #8ba99e, #4f7d74);
-  box-shadow: 0 1px 3px rgba(45, 81, 75, .2);
+  background: var(--unity-color, var(--green-deep));
+  box-shadow: inset 0 -2px 4px rgba(0,0,0,.15), inset 0 2px 4px rgba(255,255,255,.1);
   transition: width .3s ease;
 }
 .topbar-unity-meter::after {
@@ -569,11 +568,11 @@ main:has(.game-layout), main:has(.debrief-layout) { display: flex; flex-directio
   .festival-screen p { margin: 0 auto 20px; }
 }
 
-.result-layout { min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; align-content: center; gap: 12px; padding: 8px 0; }
+.result-layout { min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; align-content: center; gap: 4px; padding: 2px 0; }
 .result-copy { width: min(100%, 960px); display: flex; flex-direction: column; align-items: center; text-align: center; }
-.result-state-art { width: min(220px, 20vw); height: clamp(82px, 14vh, 120px); display: block; margin: 6px auto 2px; object-fit: contain; }
-.result-copy h1 { margin: 4px 0; color: var(--green-deep); font-size: clamp(48px, 5vw, 76px); line-height: 1; }
-.result-copy > p { max-width: 760px; margin-bottom: 8px; color: var(--muted-ink); font-size: clamp(21px, 1.7vw, 30px); line-height: 1.35; }
+.result-state-art { width: min(540px, 48vw); height: clamp(230px, 35vh, 320px); display: block; margin: 0 auto 4px; object-fit: contain; }
+.result-copy h1 { margin: 2px 0 6px; color: var(--green-deep); font-size: clamp(48px, 5vw, 76px); line-height: 1; }
+.result-copy > p { max-width: 760px; margin-bottom: 6px; color: var(--muted-ink); font-size: clamp(21px, 1.7vw, 30px); line-height: 1.35; }
 .result-board { width: min(100%, 1200px); max-width: none; padding: 18px; }
 .result-board > .eyebrow { display: block; margin-bottom: 12px; font-size: 13px; text-align: center; }
 .result-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
@@ -589,8 +588,8 @@ main:has(.game-layout), main:has(.debrief-layout) { display: flex; flex-directio
 .result-restart { justify-self: center; }
 
 @media (min-width: 821px) and (max-height: 760px) {
-  .result-layout { gap: 6px; padding: 4px 0; }
-  .result-state-art { width: min(180px, 18vw); height: 82px; margin: 2px auto 0; }
+  .result-layout { gap: 4px; padding: 2px 0; }
+  .result-state-art { width: min(420px, 38vw); height: 190px; margin: 0 auto 2px; }
   .result-board { padding: 10px; }
   .result-board > .eyebrow { margin-bottom: 8px; }
   .result-metric { grid-template-columns: 80px minmax(0, 1fr) auto; gap: 4px 12px; padding: 8px; }
@@ -622,7 +621,7 @@ main:has(.game-layout), main:has(.debrief-layout) { display: flex; flex-directio
   .game-sidebar, .debrief-sidebar { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
   .sidebar-note { align-self: stretch; }
   .result-layout { min-height: 0; grid-template-columns: 1fr; gap: 8px; padding: 4px 0; }
-  .result-state-art { width: min(190px, 40vw); height: clamp(72px, 12svh, 100px); }
+  .result-state-art { width: min(360px, 60vw); height: clamp(170px, 25svh, 220px); }
 }
 
 @media (max-width: 540px) {
@@ -719,7 +718,7 @@ main:has(.game-layout), main:has(.debrief-layout) { display: flex; flex-directio
   .festival-content p { margin-bottom: 7px; font-size: 14px; line-height: 1.35; }
   .festival-content button { margin-top: 6px; }
   .result-layout { gap: 6px; padding: 0; }
-  .result-state-art { width: min(150px, 42vw); height: min(70px, 12svh); margin: 3px auto 1px; }
+  .result-state-art { width: min(360px, 65vw); height: min(200px, 26svh); margin: 1px auto 2px; }
   .result-copy > .eyebrow { font-size: 9px; }
   .result-board { padding: 8px; }
   .result-board > .eyebrow { margin-bottom: 6px; font-size: 11px; }

@@ -203,13 +203,17 @@
       : "";
     const soundLabel = soundEnabled ? "Звук" : "Без звука";
     const soundIcon = soundEnabled ? "🔊" : "🔇";
+    let unityColor = "var(--green-deep)";
+    if (state.unity === 0) unityColor = "#1a1a1a";
+    else if (state.unity <= 2) unityColor = "#c0392b";
+    else if (state.unity <= 4) unityColor = "#e67e22";
     const unityMeter = ["game", "debrief", "festival", "result"].includes(state.phase)
       ? `
             <div class="topbar-unity" aria-label="Единство города">
               <div class="topbar-unity-label">Единство</div>
               <div class="topbar-unity-scale">
                 <strong>${state.unity}</strong>
-                <div class="topbar-unity-meter" role="meter" aria-label="Единство" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${state.unity}">
+                <div class="topbar-unity-meter" role="meter" aria-label="Единство" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${state.unity}" style="--unity-color: ${unityColor};">
                   <span style="width:${state.unity * 10}%"></span>
                 </div>
                 <span class="topbar-unity-max">10</span>
@@ -251,12 +255,17 @@
       </div>`;
   }
 
-  function resultMetrics(statusArt) {
+  function resultMetrics() {
+    const unityArt = state.unity === 0
+      ? "assets/img/status_column_ruined.png"
+      : state.unity <= 4
+        ? "assets/img/status_columns_balance.png"
+        : "assets/img/status_sun_column_concord.png";
     const metrics = [
       ["F", FACTION_BADGES.F.label, "philosophers", FACTION_BADGES.F.src, state.factions.F],
       ["V", FACTION_BADGES.V.label, "warriors", FACTION_BADGES.V.src, state.factions.V],
       ["T", FACTION_BADGES.T.label, "merchants", FACTION_BADGES.T.src, state.factions.T],
-      ["E", "Единство", "unity", statusArt, state.unity]
+      ["E", "Единство", "unity", unityArt, state.unity]
     ];
     return `
       <div class="result-metrics" aria-label="Итоговые шкалы">
@@ -494,7 +503,7 @@
         </div>
         <div class="result-board">
           <span class="eyebrow">ШКАЛЫ ГОРОДА</span>
-          ${resultMetrics(resultArt)}
+          ${resultMetrics()}
           <p class="result-reflection">Поговорите о том, кому досталась власть и чем за это пришлось заплатить.</p>
         </div>
         <button class="primary-button result-restart" data-action="restart">Начать заново <span aria-hidden="true">↻</span></button>
