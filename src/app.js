@@ -8,24 +8,24 @@
 
   const ruleSlides = [
     {
-      title: "Три фракции",
-      text: "Философы (Ф), Воины (В) и Торговцы (Т) спорят за влияние. В начале у каждой фракции по 5 очков."
+      title: "У кого какая власть?",
+      text: "В городе спорят философы, воины и торговцы. В начале у каждой группы по 5 очков влияния."
     },
     {
-      title: "Единство — здоровье города",
-      text: "Шкала Единства (Е) начинается с 8 и меняется от 0 до 10. Если она падает до нуля, город погибает."
+      title: "Что держит город вместе?",
+      text: "За это отвечает шкала единства: на старте у города 8 очков. Если она опустится до нуля, партия закончится."
     },
     {
-      title: "У каждого решения есть цена",
-      text: "В каждом кризисе три варианта. Они по-разному меняют влияние и Единство; правильного ответа нет."
+      title: "Лёгкого выхода не будет",
+      text: "В каждом кризисе — три решения. Выбирая одно, вы усиливаете одну группу и меняете жизнь всего города. Правильного ответа нет."
     },
     {
-      title: "Обсудите и выберите общий ответ",
-      text: "Класс обсуждает варианты вслух, затем один человек отмечает общий выбор. Сайт не собирает голоса учеников."
+      title: "Сначала договоритесь",
+      text: "Обсудите все три варианта и выберите один общий. Ведущий отметит его на экране."
     },
     {
-      title: "Договоритесь и посмотрите на результат",
-      text: "Впереди 12 кризисов и праздники после 4-го и 8-го. В конце город получит свой строй — или погибнет от раздора."
+      title: "Впереди двенадцать кризисов",
+      text: "После четвёртого и восьмого город переведёт дух на празднике. В конце увидим, к чему привели ваши решения."
     }
   ];
 
@@ -41,18 +41,18 @@
 
   function pageShell(content) {
     const teacherTag = state.teacherMode
-      ? '<span class="mode-tag">Панель ведущего</span>'
+      ? '<span class="mode-tag">Экран ведущего</span>'
       : "";
     return `
       <div class="site-shell">
         <header class="topbar">
           <a class="wordmark" href="#" data-action="home" aria-label="Полис — главное меню">
             <span class="wordmark-seal" aria-hidden="true">Π</span>
-            <span><strong>ПОЛИС</strong><small>ИГРА ПО «ГОСУДАРСТВУ» ПЛАТОНА</small></span>
+            <span><strong>Полис</strong><small>Игра по «Государству» Платона</small></span>
           </a>
           <div class="topbar-actions">
             ${teacherTag}
-            ${state.teacherMode && state.phase !== "home" ? '<button class="text-button" data-action="leave-teacher">В меню</button>' : ""}
+            ${state.teacherMode && state.phase !== "home" ? '<button class="text-button" data-action="leave-teacher">Выйти в меню</button>' : ""}
           </div>
         </header>
         <main id="main-content" tabindex="-1">${content}</main>
@@ -81,20 +81,20 @@
     return `
       <section class="unity-card ${level}" aria-label="Единство города">
         <div class="unity-heading">
-          <div><span class="eyebrow">ЗДОРОВЬЕ ГОРОДА</span><h2>Единство</h2></div>
+          <div><span class="eyebrow">КАК ДЕРЖИТСЯ ГОРОД</span><h2>Единство</h2></div>
           <strong class="unity-value">${state.unity}<small> / 10</small></strong>
         </div>
         <div class="unity-track" role="meter" aria-label="Единство" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${state.unity}">
           <span style="width:${state.unity * 10}%"></span>
         </div>
-        <div class="track-scale"><span>Раздор</span><span>Сплочённость</span></div>
+        <div class="track-scale"><span>Раскол</span><span>Согласие</span></div>
       </section>`;
   }
 
   function teacherMetrics() {
     return `
       <section class="teacher-board">
-        <div class="section-heading"><span class="eyebrow">ТЕКУЩЕЕ СОСТОЯНИЕ</span><h2>Шкалы города</h2></div>
+        <div class="section-heading"><span class="eyebrow">СЕЙЧАС</span><h2>Шкалы города</h2></div>
         ${factionMetrics()}
         <div class="teacher-unity-row"><span>Единство</span><strong>${state.unity} / 10</strong></div>
       </section>`;
@@ -104,44 +104,50 @@
     return `
       <section class="home-hero">
         <div class="hero-copy">
-          <span class="eyebrow">УЧЕБНАЯ ПЕРЕГОВОРНАЯ ИГРА</span>
-          <h1>Какой город<br><em>мы построим?</em></h1>
-          <p class="hero-intro">Двенадцать кризисов. Три силы. Одно общее решение — и судьба города в ваших руках.</p>
+          <span class="eyebrow">Игра для разговора о городе</span>
+          <h1>Каким будет<br><em>наш город?</em></h1>
+          <p class="hero-intro">Обсудите решение всем классом. Каждый выбор что-то меняет — и у каждого есть своя цена.</p>
           <div class="hero-actions">
-            <button class="primary-button" data-action="play">Начать игру <span aria-hidden="true">→</span></button>
-            <button class="quiet-button" data-action="open-teacher">Меню преподавателя <span aria-hidden="true">↗</span></button>
+            <button class="primary-button" data-action="play">Начать <span aria-hidden="true">→</span></button>
+            <button class="quiet-button" data-action="open-teacher">Ведущему <span aria-hidden="true">↗</span></button>
           </div>
         </div>
         <div class="city-illustration" aria-hidden="true">
-          <div class="sun-disc"></div><div class="mountain mountain-back"></div><div class="mountain mountain-front"></div>
-          <div class="temple"><span></span><span></span><span></span><span></span><b></b></div>
-          <div class="city-ground"></div>
-          <span class="illustration-caption">ПОЛИС · ГОРОД И ЕГО ГРАЖДАНЕ</span>
+          <span class="illustration-caption">ЗАПИСКА К ИГРЕ</span>
+          <svg class="city-drawing" viewBox="0 0 520 360">
+            <path class="drawing-road" d="M-20 270C96 217 124 331 231 276s149-54 309 14M102 380c-10-107 57-106 64-198s48-91 81-168m-95 201c73 44 148 43 225-8s110-40 164-20"/>
+            <path class="drawing-building" d="m61 97 49-27 47 26v58l-49 29-47-30zm196-17 48-26 48 27v57l-48 28-48-27zM334 207l47-27 49 28v55l-48 29-48-29zM148 240l48-27 48 28v55l-48 29-48-28z"/>
+            <path class="drawing-detail" d="m77 101 33-18 33 18v39l-34 19-32-19zm195-17 33-18 33 19v38l-33 19-33-18zm76 127 33-19 33 19v36l-33 20-33-20zm-185 35 33-19 33 19v37l-33 20-33-20z"/>
+            <path class="drawing-temple" d="m216 117 47-27 48 27-48 26zm10 8v45m18-45v45m18-45v45m18-45v45m-57 0h77m-89 12h101"/>
+            <circle class="drawing-sun" cx="431" cy="81" r="31"/>
+            <path class="drawing-ray" d="M431 31V15m0 132v-16m50-50h17m-134 0h17m85-35 12-12m-95 94 12-12m71 0 12 12m-95-95 12 12"/>
+          </svg>
+          <span class="city-stamp">ГОРОД<br>НАШЕ<br>ОБЩЕЕ ДЕЛО</span>
+          <span class="city-index">12 разговоров<br>об одном городе</span>
         </div>
       </section>
       <section class="home-note">
-        <span class="note-mark">01</span>
-        <p>Философы, воины и торговцы спорят о власти. Но выдержит ли город цену их решений?</p>
-        <span class="note-signature">ПО МОТИВАМ ПЛАТОНА</span>
+        <p>Философы, воины и торговцы хотят разного. А городу нужно как-то жить со всеми сразу.</p>
+        <span class="note-signature">ПО МОТИВАМ «ГОСУДАРСТВА»</span>
       </section>`;
   }
 
   function pinScreen() {
     return `
       <section class="narrow-panel">
-        <button class="back-link" data-action="back-home">← Главное меню</button>
+        <button class="back-link" data-action="back-home">← На главную</button>
         <span class="eyebrow">ДЛЯ ВЕДУЩЕГО</span>
-        <h1 class="panel-title">Панель<br><em>преподавателя</em></h1>
-        <p class="lead">Введите PIN, чтобы открыть шкалы города и эффекты вариантов.</p>
+        <h1 class="panel-title">Экран<br><em>преподавателя</em></h1>
+        <p class="lead">Введите код — откроются все шкалы и последствия каждого решения.</p>
         <form data-form="teacher-pin" class="pin-form">
           <label for="teacher-pin">PIN-код</label>
           <div class="pin-row">
             <input id="teacher-pin" name="pin" type="password" inputmode="numeric" autocomplete="off" required aria-describedby="pin-note pin-error">
-            <button class="primary-button" type="submit">Войти <span aria-hidden="true">→</span></button>
+            <button class="primary-button" type="submit">Продолжить <span aria-hidden="true">→</span></button>
           </div>
-          <p id="pin-error" class="form-error" role="alert">${state.pinError ? "PIN не подошёл. Попробуйте ещё раз." : ""}</p>
+          <p id="pin-error" class="form-error" role="alert">${state.pinError ? "Код не подошёл. Проверьте его и попробуйте ещё раз." : ""}</p>
         </form>
-        <p id="pin-note" class="security-note"><strong>Важно:</strong> на статическом сайте PIN — только барьер от случайного перехода. Это не защита: код сайта доступен в браузере.</p>
+        <p id="pin-note" class="security-note"><strong>Важно:</strong> код только помогает не открыть этот экран случайно. Он виден в исходном коде сайта и не защищает данные.</p>
       </section>`;
   }
 
@@ -150,16 +156,14 @@
     const progress = ((state.rulesSlide + 1) / ruleSlides.length) * 100;
     return `
       <section class="rules-layout">
-        <div class="rules-aside"><span class="eyebrow">ПЕРЕД НАЧАЛОМ</span><p>Пять коротких правил — и город готов к испытаниям.</p></div>
         <article class="rules-card">
-          <div class="slide-meta"><span>ПРАВИЛА</span><span>${String(state.rulesSlide + 1).padStart(2, "0")} / 05</span></div>
-          <div class="slide-progress" aria-hidden="true"><span style="width:${progress}%"></span></div>
-          <span class="slide-number">${String(state.rulesSlide + 1).padStart(2, "0")}</span>
+          <div class="slide-meta"><span>ПРАВИЛА ИГРЫ</span></div>
+          <div class="slide-progress" role="progressbar" aria-label="Ход правил" aria-valuemin="1" aria-valuemax="${ruleSlides.length}" aria-valuenow="${state.rulesSlide + 1}" aria-valuetext="Правило ${state.rulesSlide + 1} из ${ruleSlides.length}"><span style="width:${progress}%"></span></div>
           <h1>${escapeHtml(slide.title)}</h1>
           <p>${escapeHtml(slide.text)}</p>
           <div class="slide-controls">
             <button class="quiet-button" data-action="previous-slide" ${state.rulesSlide === 0 ? "disabled" : ""}>← Назад</button>
-            <button class="primary-button" data-action="next-slide">${state.rulesSlide === ruleSlides.length - 1 ? "Начать игру" : "Далее"} <span aria-hidden="true">→</span></button>
+            <button class="primary-button" data-action="next-slide">${state.rulesSlide === ruleSlides.length - 1 ? "Пора начинать" : "Дальше"} <span aria-hidden="true">→</span></button>
           </div>
         </article>
       </section>`;
@@ -167,13 +171,13 @@
 
   function optionCards(crisis) {
     return `
-      <div class="option-list">
+      <div class="option-list" aria-label="Варианты решения">
         ${crisis.options.map((option) => `
           <button class="option-card" data-action="choose" data-option="${escapeHtml(option.id)}">
             <span class="option-letter">${escapeHtml(option.id)}</span>
             <span class="option-copy">${escapeHtml(option.text)}</span>
             ${state.teacherMode
-              ? `<span class="effect-list" aria-label="Тип и эффект варианта">${escapeHtml(option.type)} · ${effectLabels(option.effect)}</span>`
+              ? `<span class="effect-list">${escapeHtml(option.type)} · ${effectLabels(option.effect)}</span>`
               : ""}
             <span class="option-arrow" aria-hidden="true">↗</span>
           </button>`).join("")}
@@ -191,20 +195,19 @@
     return `
       <section class="game-layout">
         <div class="game-main">
-          <div class="crisis-kicker"><span>КРИЗИС ${String(crisis.id).padStart(2, "0")}</span><span class="crisis-line"></span><span>${String(data.crises.length).padStart(2, "0")} ВСЕГО</span></div>
+          <div class="crisis-kicker"><span>КРИЗИС ${crisis.id} ИЗ ${data.crises.length}</span><span class="crisis-line"></span><span>ВАШ ХОД</span></div>
           <div class="crisis-heading">
             <h1>${escapeHtml(crisis.title)}</h1>
             <p>${escapeHtml(crisis.scenario)}</p>
-            <details class="mobile-reading"><summary>Показать сценарий</summary><p>${escapeHtml(crisis.scenario)}</p></details>
+            <details class="mobile-reading"><summary>О чём этот кризис?</summary><p>${escapeHtml(crisis.scenario)}</p></details>
           </div>
           ${optionCards(crisis)}
-          <p class="choice-hint">Обсудите варианты и выберите одно общее решение.</p>
+          <p class="choice-hint">${state.teacherMode
+            ? "Когда класс договорится, отметьте выбранный вариант."
+            : "Обсудите варианты и выберите один общий ответ."}</p>
         </div>
         <aside class="game-sidebar">
           ${state.teacherMode ? teacherMetrics() : unityCard()}
-          <div class="sidebar-note"><span class="note-mark">✳</span><p>${state.teacherMode
-            ? "Повторите выбор класса на его экране."
-            : "Влияние фракций скрыто. За ходом Единства следит весь город."}</p></div>
         </aside>
       </section>`;
   }
@@ -214,29 +217,29 @@
     const option = crisis.options.find((item) => item.id === state.selectedOptionId);
     const unityChange = state.lastChanges.E;
     const unityMessage = unityChange === 0
-      ? `Единство осталось ${state.unity}.`
-      : `Единство ${unityChange > 0 ? "выросло" : "снизилось"} на ${Math.abs(unityChange)}: теперь ${state.unity}.`;
+      ? `Единство не изменилось: ${state.unity} из 10.`
+      : `Единство ${unityChange > 0 ? "выросло" : "снизилось"} на ${Math.abs(unityChange)} — теперь ${state.unity} из 10.`;
     return `
       <section class="debrief-layout">
         <div class="debrief-main">
-          <div class="crisis-kicker"><span>КРИЗИС ${String(crisis.id).padStart(2, "0")} · ВЫБОР ${escapeHtml(option.id)}</span><span class="crisis-line"></span><span>РАЗБОР</span></div>
+          <div class="crisis-kicker"><span>КРИЗИС ${crisis.id} · ВЫБОР ${escapeHtml(option.id)}</span><span class="crisis-line"></span><span>ПОСЛЕ РЕШЕНИЯ</span></div>
           <div class="quote-mark" aria-hidden="true">“</div>
-          <h1 class="debrief-title">Платон<br><em>об этом</em></h1>
+          <h1 class="debrief-title">А что на это<br><em>сказал бы Платон?</em></h1>
           <p class="plato-quote">${escapeHtml(crisis.quote)}</p>
-          <details class="mobile-reading"><summary>Открыть текст</summary><p>${escapeHtml(crisis.quote)}</p></details>
-          <div class="class-question"><span class="eyebrow">ВОПРОС КЛАССУ</span><p>${escapeHtml(crisis.question)}</p></div>
+          <details class="mobile-reading"><summary>Заглянуть в «Государство»</summary><p>${escapeHtml(crisis.quote)}</p></details>
+          <div class="class-question"><span class="eyebrow">ОБСУДИТЕ ВМЕСТЕ</span><p>${escapeHtml(crisis.question)}</p></div>
         </div>
         <aside class="debrief-sidebar">
           ${state.teacherMode ? teacherMetrics() : unityCard()}
           <div class="outcome-note">
-            <span class="eyebrow">ПОСЛЕДСТВИЕ ВЫБОРА</span>
+            <span class="eyebrow">ЧТО СТАЛО С ЕДИНСТВОМ</span>
             <p>${escapeHtml(unityMessage)}</p>
             ${state.teacherMode ? `
-              <div class="teacher-effects"><span>${escapeHtml(option.type)} · вариант: ${escapeHtml(effectLabels(state.lastEffect))}</span>
-              <span>Применено: ${escapeHtml(effectLabels(state.lastChanges))}</span></div>` : ""}
+              <div class="teacher-effects"><span>${escapeHtml(option.type)} · эффект по карточке: ${escapeHtml(effectLabels(state.lastEffect))}</span>
+              <span>Что изменилось: ${escapeHtml(effectLabels(state.lastChanges))}</span></div>` : ""}
           </div>
           <button class="primary-button full-button" data-action="continue-debrief">
-            ${state.ended ? "К итогу" : state.pendingFestival ? "К празднику" : "Продолжить"} <span aria-hidden="true">→</span>
+            ${state.ended ? "Посмотреть итог" : state.pendingFestival ? "На праздник" : "Дальше"} <span aria-hidden="true">→</span>
           </button>
         </aside>
       </section>`;
@@ -252,10 +255,10 @@
             <circle cx="33" cy="117" r="4"/><circle cx="70" cy="69" r="4"/><circle cx="120" cy="79" r="5"/><circle cx="169" cy="68" r="4"/><circle cx="207" cy="115" r="4"/>
           </svg>
         </div>
-        <span class="eyebrow">ГОРОД СОХРАНИЛ ЕДИНСТВО</span>
-        <h1>Праздник<br><em>города</em></h1>
-        <p>После общего испытания город собирается вместе. Единство выросло на одно очко — теперь <strong>${state.unity} / 10</strong>.</p>
-        <button class="primary-button" data-action="continue-festival">Продолжить <span aria-hidden="true">→</span></button>
+        <span class="eyebrow">ЕСТЬ ПОВОД ВЫДОХНУТЬ</span>
+        <h1>День<br><em>города</em></h1>
+        <p>Кризис позади — горожане собрались вместе. Единство прибавило очко: теперь <strong>${state.unity} из 10</strong>.</p>
+        <button class="primary-button" data-action="continue-festival">К следующему кризису <span aria-hidden="true">→</span></button>
       </section>`;
   }
 
@@ -264,16 +267,16 @@
     return `
       <section class="result-layout">
         <div class="result-copy">
-          <span class="eyebrow">ИТОГ ПАРТИИ · КРИЗИСОВ ПРОЙДЕНО ${state.unity === 0 ? state.crisisIndex + 1 : data.crises.length}</span>
+          <span class="eyebrow">ПАРТИЯ ЗАВЕРШЕНА · КРИЗИСОВ ПРОЙДЕНО: ${state.unity === 0 ? state.crisisIndex + 1 : data.crises.length}</span>
           <h1>${escapeHtml(result.name)}</h1>
           <p>${escapeHtml(result.description)}</p>
-          <button class="primary-button" data-action="restart">Играть снова <span aria-hidden="true">↻</span></button>
+          <button class="primary-button" data-action="restart">Начать заново <span aria-hidden="true">↻</span></button>
         </div>
         <div class="result-board">
-          <span class="eyebrow">СОСТОЯНИЕ ГОРОДА</span>
+          <span class="eyebrow">ЧТО ПОЛУЧИЛОСЬ</span>
           ${factionMetrics()}
           <div class="result-unity"><span>Единство</span><strong>${state.unity}<small> / 10</small></strong></div>
-          <p class="result-reflection">Результат — не победа одной группы, а повод обсудить, какой ценой он достигнут.</p>
+          <p class="result-reflection">Поговорите о том, кому досталась власть и чем за это пришлось заплатить.</p>
         </div>
       </section>`;
   }
@@ -297,7 +300,7 @@
 
   function returnHome() {
     if (["game", "debrief", "festival"].includes(state.phase) &&
-        !window.confirm("Вернуться в меню? Текущая независимая партия будет сброшена.")) return;
+        !window.confirm("Выйти в меню и начать заново? Текущая партия сбросится.")) return;
     state = game.createInitialState();
     render();
   }
