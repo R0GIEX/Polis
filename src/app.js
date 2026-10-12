@@ -25,8 +25,8 @@
     0: "assets/img/faction_badges_row.png",
     1: "assets/img/status_sun_column_concord.png",
     2: "assets/img/olive_branch.png",
-    3: "assets/img/banner_philosophers.png",
-    4: "assets/img/olive_wreath.png"
+    3: "assets/img/4pravilodogovoritsya.png",
+    4: "assets/img/5praviloitogoviistroy.png"
   };
 
   const FACTION_BADGES = {
@@ -368,6 +368,26 @@
               <img src="${badge.src}" alt="${badge.label}">
               <span>${badge.label}</span>
             </div>`).join("")}
+        </div>`;
+    } else if (state.rulesSlide === 2) {
+      visual = `
+        <div class="rule-options-explanation">
+          <h3>В каждом кризисе — три варианта ответа</h3>
+          <div class="option-types">
+            <div class="option-type">
+              <span class="type-label">Мягкий</span>
+              <p>Укрепляет философов, не наказывает никого жёстко. Единство растёт или не меняется.</p>
+            </div>
+            <div class="option-type">
+              <span class="type-label">Средний</span>
+              <p>Баланс: усиливает одну фракцию за счёт другой. Единство обычно стабильно.</p>
+            </div>
+            <div class="option-type">
+              <span class="type-label">Жёсткий</span>
+              <p>Резко сдвигает власть к одной группе, слабит других. Единство падает.</p>
+            </div>
+          </div>
+          <p class="rule-note">Нет «правильного» ответа — каждый выбор меняет город по-своему.</p>
         </div>`;
     } else {
       visual = `<img src="${slide.art}" alt="">`;
