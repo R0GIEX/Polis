@@ -541,21 +541,21 @@ main:has(.game-layout), main:has(.debrief-layout) { display: flex; flex-directio
 .full-button { width: 100%; }
 
 .festival-screen {
-  width: min(1320px, 100%);
-  height: calc(100svh - 150px);
+  width: min(1600px, 100%);
+  height: calc(100svh - 100px);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr);
+  grid-template-columns: minmax(0, 1.3fr) minmax(360px, .9fr);
   grid-template-rows: 1fr;
   align-items: center;
-  column-gap: clamp(16px, 2.5vw, 36px);
+  column-gap: clamp(24px, 4vw, 60px);
 }
 .festival-art {
   grid-column: 1;
   width: 100%;
   height: 100%;
-  max-width: 760px;
-  max-height: calc(100svh - 190px);
+  max-width: 1000px;
+  max-height: calc(100svh - 150px);
   margin: 0;
   display: flex;
   justify-content: center;
@@ -567,7 +567,7 @@ main:has(.game-layout), main:has(.debrief-layout) { display: flex; flex-directio
   display: block;
   width: 100%;
   height: 100%;
-  max-height: calc(100svh - 190px);
+  max-height: calc(100svh - 150px);
   object-fit: contain;
   border: 0;
 }
@@ -577,24 +577,24 @@ main:has(.game-layout), main:has(.debrief-layout) { display: flex; flex-directio
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 12px;
+  gap: 24px;
   text-align: left;
 }
 .festival-content > .eyebrow { margin: 0; }
-.festival-content h1 { margin: 0; font-size: clamp(64px, 7vw, 108px); line-height: .95; }
-.festival-content p { max-width: 520px; margin: 0; color: var(--muted-ink); font-size: clamp(21px, 1.7vw, 30px); line-height: 1.45; }
+.festival-content h1 { margin: 0; font-size: clamp(72px, 8vw, 120px); line-height: .9; }
+.festival-content p { max-width: 600px; margin: 0; color: var(--muted-ink); font-size: clamp(24px, 2vw, 34px); line-height: 1.5; }
 .festival-content p strong { color: var(--green-deep); }
 .festival-unity { color: var(--green-deep); font-weight: 600; }
-.festival-content button { margin-top: 8px; align-self: flex-start; }
+.festival-content button { margin-top: 12px; align-self: flex-start; }
 
 @media (max-width: 960px) {
   .festival-screen {
-    width: min(680px, 100%);
+    width: min(800px, 100%);
     height: auto;
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto;
     justify-items: center;
-    gap: 0;
+    gap: 16px;
     text-align: center;
   }
   .festival-content {
@@ -602,7 +602,7 @@ main:has(.game-layout), main:has(.debrief-layout) { display: flex; flex-directio
     grid-row: auto;
     justify-self: center;
     width: 100%;
-    max-width: 520px;
+    max-width: 600px;
   }
   .festival-content > .eyebrow,
   .festival-content h1,
@@ -614,13 +614,13 @@ main:has(.game-layout), main:has(.debrief-layout) { display: flex; flex-directio
   .festival-art {
     grid-column: 1;
     grid-row: auto;
-    width: min(560px, 100%);
+    width: min(680px, 100%);
     height: auto;
     margin: 0 auto 5px;
   }
   .festival-art img {
     height: auto;
-    max-height: 48svh;
+    max-height: 50svh;
   }
   .festival-screen p { margin: 0 auto 20px; }
 }

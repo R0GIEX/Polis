@@ -21,13 +21,13 @@
     12: "assets/img/12.png"
   };
 
-  const RULE_ART = {
-    0: "assets/img/faction_badges_row.png",
-    1: "assets/img/status_sun_column_concord.png",
-    2: "assets/img/olive_branch.png",
-    3: "assets/img/4pravilodogovoritsya.png",
-    4: "assets/img/5praviloitogoviistroy.png"
-  };
+const RULE_ART = {
+  0: "assets/img/faction_badges_row.png",
+  1: "assets/img/status_sun_column_concord.png",
+  2: "assets/img/allrole.png",
+  3: "assets/img/4pravilodogovoritsya.png",
+  4: "assets/img/5praviloitogoviistroy.png"
+};
 
   const FACTION_BADGES = {
     F: { label: "Философы", src: "assets/img/faction_badge_philosophers.png" },
@@ -148,33 +148,33 @@
     }
   }
 
-  const ruleSlides = [
-    {
-      title: "У кого какая власть?",
-      text: "В городе спорят философы, воины и торговцы. В начале у каждой группы по 5 очков влияния.",
-      art: RULE_ART[0]
-    },
-    {
-      title: "Что держит город вместе?",
-      text: "За это отвечает шкала единства: на старте у города 8 очков. Если она опустится до нуля, партия закончится.",
-      art: RULE_ART[1]
-    },
-    {
-      title: "Лёгкого выхода не будет",
-      text: "В каждом кризисе — три решения. Выбирая одно, вы усиливаете одну группу и меняете жизнь всего города. Правильного ответа нет.",
-      art: RULE_ART[2]
-    },
-    {
-      title: "Сначала договоритесь",
-      text: "Обсудите все три варианта и выберите один общий. Ведущий отметит его на экране.",
-      art: RULE_ART[3]
-    },
-    {
-      title: "Впереди двенадцать кризисов",
-      text: "После четвёртого и восьмого город переведёт дух на празднике. В конце увидим, к чему привели ваши решения.",
-      art: RULE_ART[4]
-    }
-  ];
+   const ruleSlides = [
+     {
+       title: "У кого какая власть?",
+       text: "В городе спорят философы, воины и торговцы. В начале у каждой группы по 5 очков влияния.",
+       art: RULE_ART[0]
+     },
+     {
+       title: "Что держит город вместе?",
+       text: "За это отвечает шкала единства: на старте у города 8 очков. Если она опустится до нуля, партия закончится.",
+       art: RULE_ART[1]
+     },
+      {
+        title: "Шесть ролей города",
+        text: '<span style="color: var(--green)">Философ:</span> цель — Единство ≥ 7 к концу игры\n<span style="color: var(--green)">Учитель:</span> цель — разница между макс. и мин. влиянием Ф, В, Т ≤ 5\n<span style="color: var(--green-deep)">Стратег:</span> цель — влияние воинов (В) > Ф и > Т\n<span style="color: var(--green-deep)">Гоплит:</span> цель — влияние воинов (В) ≥ влияние торговцев (Т)\n<span style="color: var(--gold)">Земледелец:</span> цель — влияние торговцев (Т) ≥ 6 и Единство ≥ 6\n<span style="color: var(--gold)">Купец:</span> цель — влияние торговцев (Т) > Ф и > В',
+        art: RULE_ART[2]
+      },
+      {
+        title: "Сначала договоритесь",
+        text: "Обсудите все три варианта и выберите один общий. В игре нет правильного выбора, все выборы влияют на итог государственного строя. Ведущий отметит его на экране.",
+        art: RULE_ART[3]
+      },
+     {
+       title: "Впереди двенадцать кризисов",
+       text: "После четвёртого и восьмого город переведёт дух на празднике. В конце увидим, к чему привели ваши решения.",
+       art: RULE_ART[4]
+     }
+   ];
 
   function escapeHtml(value) {
     return String(value).replace(/[&<>"']/g, (character) => ({
@@ -362,56 +362,36 @@
     let visual;
     if (state.rulesSlide === 0) {
       visual = `
-        <div class="faction-badge-row" aria-label="Фракции города">
-          ${Object.entries(FACTION_BADGES).map(([key, badge]) => `
-            <div class="faction-badge faction-${key.toLowerCase()}">
-              <img src="${badge.src}" alt="${badge.label}">
-              <span>${badge.label}</span>
-            </div>`).join("")}
-        </div>`;
-    } else if (state.rulesSlide === 2) {
-      visual = `
-        <div class="rule-options-explanation">
-          <h3>В каждом кризисе — три варианта ответа</h3>
-          <div class="option-types">
-            <div class="option-type">
-              <span class="type-label">Мягкий</span>
-              <p>Укрепляет философов, не наказывает никого жёстко. Единство растёт или не меняется.</p>
-            </div>
-            <div class="option-type">
-              <span class="type-label">Средний</span>
-              <p>Баланс: усиливает одну фракцию за счёт другой. Единство обычно стабильно.</p>
-            </div>
-            <div class="option-type">
-              <span class="type-label">Жёсткий</span>
-              <p>Резко сдвигает власть к одной группе, слабит других. Единство падает.</p>
-            </div>
-          </div>
-          <p class="rule-note">Нет «правильного» ответа — каждый выбор меняет город по-своему.</p>
-        </div>`;
+      <div class="faction-badge-row" aria-label="Фракции города">
+        ${Object.entries(FACTION_BADGES).map(([key, badge]) => `
+          <div class="faction-badge faction-${key.toLowerCase()}">
+            <img src="${badge.src}" alt="${badge.label}">
+            <span>${badge.label}</span>
+          </div>`).join("")}
+      </div>`;
     } else {
       visual = `<img src="${slide.art}" alt="">`;
     }
     return `
-      <section class="rules-layout">
-        <article class="rules-card">
-          <div class="rules-card-inner">
-            <div class="rules-copy">
-              <div class="slide-meta"><span>ПРАВИЛА ИГРЫ</span></div>
-              <div class="slide-progress" role="progressbar" aria-label="Ход правил" aria-valuemin="1" aria-valuemax="${ruleSlides.length}" aria-valuenow="${state.rulesSlide + 1}" aria-valuetext="Правило ${state.rulesSlide + 1} из ${ruleSlides.length}"><span style="width:${progress}%"></span></div>
-              <h1>${escapeHtml(slide.title)}</h1>
-              <p>${escapeHtml(slide.text)}</p>
-              <div class="slide-controls">
-                <button class="quiet-button" data-action="previous-slide" ${state.rulesSlide === 0 ? "disabled" : ""}>← Назад</button>
-                <button class="primary-button" data-action="next-slide">${state.rulesSlide === ruleSlides.length - 1 ? "Пора начинать" : "Дальше"} <span aria-hidden="true">→</span></button>
-              </div>
-            </div>
-            <div class="rules-visual" aria-hidden="true">
-              ${visual}
+    <section class="rules-layout">
+      <article class="rules-card">
+        <div class="rules-card-inner">
+          <div class="rules-copy">
+            <div class="slide-meta"><span>ПРАВИЛА ИГРЫ</span></div>
+            <div class="slide-progress" role="progressbar" aria-label="Ход правил" aria-valuemin="1" aria-valuemax="${ruleSlides.length}" aria-valuenow="${state.rulesSlide + 1}" aria-valuetext="Правило ${state.rulesSlide + 1} из ${ruleSlides.length}"><span style="width:${progress}%"></span></div>
+            <h1>${escapeHtml(slide.title)}</h1>
+            <p>${slide.text.replace(/\n/g, '<br>')}</p>
+            <div class="slide-controls">
+              <button class="quiet-button" data-action="previous-slide" ${state.rulesSlide === 0 ? "disabled" : ""}>← Назад</button>
+              <button class="primary-button" data-action="next-slide">${state.rulesSlide === ruleSlides.length - 1 ? "Пора начинать" : "Дальше"} <span aria-hidden="true">→</span></button>
             </div>
           </div>
-        </article>
-      </section>`;
+          <div class="rules-visual" aria-hidden="true">
+            ${visual}
+          </div>
+        </div>
+      </article>
+    </section>`;
   }
 
   function optionCards(crisis) {
